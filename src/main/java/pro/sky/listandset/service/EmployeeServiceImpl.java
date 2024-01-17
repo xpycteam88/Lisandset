@@ -6,46 +6,54 @@ import pro.sky.listandset.exeption.EmployeeAlreadyAddedException;
 import pro.sky.listandset.exeption.EmployeeNotFoundException;
 import pro.sky.listandset.exeption.EmployeeStorageIsFullException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private final int maxEmployees = 3;
-    private final List<Employee> employees = new ArrayList<>(List.of(
-            new Employee("Fedor", "Dvinyatin"),
-            new Employee("Alexander", "Gudkov")
+    private static int maxEmployees = 3;
+    private final Map<String, Employee> employees = new HashMap<>(Map.of(
+            "FedorDvinyatin", new Employee("Fedor", "Dvinyatin"),
+            "AlexanderGudkov", new Employee("Alexander", "Gudkov")
     ));
 
     @Override
-    public void addEmployee(Employee employee) throws EmployeeStorageIsFullException, EmployeeAlreadyAddedException {
+    public void addEmployee(String firstName, String lastName) {
         if (employees.size() >= maxEmployees) {
             throw new EmployeeStorageIsFullException("Employee storage is full");
-        } else if (employees.contains(employee)) {
+        }
+        /* не стал использовать, так как добавится только уникальный объект
+        if (employees.containsKey(firstName + lastName)) {
             throw new EmployeeAlreadyAddedException("Employee is already added");
-        } else {
-            employees.add(employee);
         }
+
+         */
+        Employee employee = new Employee(firstName, lastName);
+        employees.put(firstName + lastName, employee);
+
     }
 
     @Override
-    public void removeEmployee(Employee employee) throws EmployeeNotFoundException {
-        if (!employees.contains(employee)) {
-            throw new EmployeeNotFoundException("Employee is not found");
-        } else {
-            employees.remove(employee);
-        }
-    }
-
-    @Override
-    public void findEmployee(Employee employee) throws EmployeeNotFoundException {
-        if (!employees.contains(employee)) {
+    public void removeEmployee(String firstName, String lastName) {
+        var key = firstName + lastName;
+        if (!employees.containsKey(key)) {
             throw new EmployeeNotFoundException("Employee is not found");
         }
+        Employee employee = new Employee(firstName, lastName);
+        employees.remove(key, employee);
     }
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employees;
+    public Employee findEmployee(String firstName, String lastName) {
+        var key = firstName + lastName;
+        if (!employees.containsKey(key)) {
+            throw new EmployeeNotFoundException("Employee is not found");
+        }
+        //Employee employee = new Employee(firstName, lastName);
+        return new Employee(firstName, lastName);
+    }
+
+    @Override
+    public Collection<Employee> getAllEmployees() {
+        return Collections.unmodifiableCollection(employees.values());
     }
 }

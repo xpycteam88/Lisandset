@@ -3,13 +3,16 @@ package pro.sky.listandset.service;
 import org.springframework.stereotype.Service;
 import pro.sky.listandset.employee.Employee;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface EmployeeService {
-    void addEmployee(Employee employee);
-    void removeEmployee(Employee employee);
-    void findEmployee(Employee employee);
+    void addEmployee(String firstName, String lastName);
+    void removeEmployee(String firstName, String lastName);
+    Employee findEmployee(String firstName, String lastName);
 
-    List<Employee> getAllEmployees();
+    Collection<Employee> getAllEmployees();
 }
