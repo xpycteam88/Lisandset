@@ -2,6 +2,7 @@ package pro.sky.listandset.service;
 
 import org.springframework.stereotype.Service;
 import pro.sky.listandset.employee.Employee;
+import pro.sky.listandset.exeption.EmployeeNotFoundException;
 
 import java.util.Comparator;
 import java.util.List;
@@ -17,19 +18,19 @@ public class DepartmentServiceImp implements DepartmentService {
     }
 
     @Override
-    public Employee findMaxSalary(int departmentId) {
+    public Employee findMaxSalaryInDepartment(int departmentId) {
         return employeeService.getAllEmployees().stream()
                 .filter(employee -> employee.getDepartmentId() == departmentId)
                 .max(Comparator.comparingInt(Employee::getSalary))
-                .orElse(null);
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
     }
 
     @Override
-    public Employee findMinSalary(int departmentId) {
+    public Employee findMinSalaryInDepartment(int departmentId) {
         return employeeService.getAllEmployees().stream()
                 .filter(employee -> employee.getDepartmentId() == departmentId)
                 .min(Comparator.comparingInt(Employee::getSalary))
-                .orElse(null);
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
     }
 
     @Override
@@ -40,7 +41,7 @@ public class DepartmentServiceImp implements DepartmentService {
     }
 
     @Override
-    public Map<Integer, List<Employee>> employeesInAllDepartments() {
+    public Map<Integer, List<Employee>> groupEmployeesByDepartments() {
         return employeeService.getAllEmployees().stream()
                 .collect(Collectors.groupingBy(Employee::getDepartmentId));
     }
