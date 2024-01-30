@@ -10,46 +10,46 @@ import java.util.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private static int maxEmployees = 3;
+    private static int maxEmployees = 10;
     private final Map<String, Employee> employees = new HashMap<>(Map.of(
-            "FedorDvinyatin", new Employee("Fedor", "Dvinyatin"),
-            "AlexanderGudkov", new Employee("Alexander", "Gudkov")
+            "FedorDvinyatin", new Employee("Fedor", "Dvinyatin", 12000, 1),
+            "AlexandrGudkov", new Employee("Alexandr", "Gudkov", 15000, 1),
+            "MaksimPotachev", new Employee("Maksim", "Potachev", 13000, 2),
+            "AleksandrDruz", new Employee("Aleksandr", "Druz", 25000, 2)
     ));
 
     @Override
-    public void addEmployee(String firstName, String lastName) {
+    public void addEmployee(String firstName, String lastName, int salary, int departmentId) {
         if (employees.size() >= maxEmployees) {
             throw new EmployeeStorageIsFullException("Employee storage is full");
         }
-        /* не стал использовать, так как добавится только уникальный объект
-        if (employees.containsKey(firstName + lastName)) {
-            throw new EmployeeAlreadyAddedException("Employee is already added");
-        }
 
-         */
-        Employee employee = new Employee(firstName, lastName);
-        employees.put(firstName + lastName, employee);
+        Employee employee = new Employee(firstName, lastName, salary, departmentId);
+        employees.put(makeKey(firstName, lastName), employee);
 
     }
 
     @Override
     public void removeEmployee(String firstName, String lastName) {
-        var key = firstName + lastName;
+        var key = makeKey(firstName, lastName);
         if (!employees.containsKey(key)) {
             throw new EmployeeNotFoundException("Employee is not found");
         }
-        Employee employee = new Employee(firstName, lastName);
-        employees.remove(key, employee);
+        employees.remove(key);
     }
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
-        var key = firstName + lastName;
-        if (!employees.containsKey(key)) {
+        var key = makeKey(firstName, lastName);
+        var employee = employees.get(key);
+        if (employee == null) {
             throw new EmployeeNotFoundException("Employee is not found");
         }
-        //Employee employee = new Employee(firstName, lastName);
-        return new Employee(firstName, lastName);
+        return employee;
+    }
+
+    private static String makeKey(String firstName, String lastName){
+        return firstName + lastName;
     }
 
     @Override
