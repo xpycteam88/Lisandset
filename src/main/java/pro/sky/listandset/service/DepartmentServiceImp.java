@@ -18,6 +18,13 @@ public class DepartmentServiceImp implements DepartmentService {
     }
 
     @Override
+    public Integer sumSalaryInDepartment(int departmentId) {
+        return employeeService.getAllEmployees().stream()
+                .filter(employee -> employee.getDepartmentId() == departmentId)
+                .mapToInt(Employee::getSalary).sum();
+    }
+
+    @Override
     public Employee findMaxSalaryInDepartment(int departmentId) {
         return employeeService.getAllEmployees().stream()
                 .filter(employee -> employee.getDepartmentId() == departmentId)
@@ -34,7 +41,7 @@ public class DepartmentServiceImp implements DepartmentService {
     }
 
     @Override
-    public List<Employee> getAllEmployeesDepartment(int departmentId) {
+    public List<Employee> getAllEmployeesByDepartment(int departmentId) {
         return employeeService.getAllEmployees().stream()
                 .filter(employee -> employee.getDepartmentId() == departmentId)
                 .collect(Collectors.toList());
