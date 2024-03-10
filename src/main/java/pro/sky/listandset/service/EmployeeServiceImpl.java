@@ -9,17 +9,19 @@ import pro.sky.listandset.exeption.IncorrectInputException;
 
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.capitalize;
 import static org.apache.commons.lang3.StringUtils.isAlpha;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private static int maxEmployees = 10;
+    private static int maxEmployees = 4;
     private final Map<String, Employee> employees = new HashMap<>(Map.of(
-            "FedorDvinyatin", new Employee("Fedor", "Dvinyatin", 12000, 1),
-            "AlexandrGudkov", new Employee("Alexandr", "Gudkov", 15000, 1),
-            "MaksimPotachev", new Employee("Maksim", "Potachev", 13000, 2),
-            "AleksandrDruz", new Employee("Aleksandr", "Druz", 25000, 2)
+            //"FedorDvinyatin", new Employee("Fedor", "Dvinyatin", 12000, 1),
+            //"AlexandrGudkov", new Employee("Alexandr", "Gudkov", 15000, 1),
+            //"MaksimPotachev", new Employee("Maksim", "Potachev", 13000, 2),
+            //"AleksandrDruz", new Employee("Aleksandr", "Druz", 25000, 2)
     ));
+
 
     @Override
     public void addEmployee(String firstName, String lastName, int salary, int departmentId) {
@@ -53,7 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private static String makeKey(String firstName, String lastName){
         if (containsOnlyAlphabet(firstName, lastName)) {
-            return firstName + lastName;
+            return capitalize(firstName.toLowerCase()) + capitalize(lastName.toLowerCase());
         }
         throw new IncorrectInputException("Invalid characters in the query");
     }
